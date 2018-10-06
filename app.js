@@ -38,4 +38,4 @@ process.argv.forEach((val, index, array) => {
 });
 
 console.log(`Listening on ${PORT}`);
-app.listen(PORT);
+app.listen(PORT, "0.0.0.0");
