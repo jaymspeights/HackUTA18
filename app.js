@@ -1,5 +1,5 @@
-let Express = require('express');
-let app = Express();
+let express = require('express');
+let app = express();
 let path_engine = require('./path_engine.js');
 var bodyParser = require('body-parser');
 
@@ -7,10 +7,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-
-app.get('/', (req, res) => {
-   res.sendFile(__dirname + '/frontend/index.html');
-});
+app.use(express.static('frontend/public'));
 
 app.get('/get/path', (req, res) =>  {
     res.send(path_engine.getPath(req.query.a, req.query.b));
