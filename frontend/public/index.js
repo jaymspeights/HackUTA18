@@ -23,6 +23,8 @@ $(() => {
     // Create the default UI components
     var ui = H.ui.UI.createDefault(map, defaultLayers);
 
+    var positionArray = [];
+
     var currentPosition;
     function geo_success(position) {
         console.log("GOT AN EVENT", position);
@@ -34,6 +36,11 @@ $(() => {
         map.setZoom(14);
         currentPosition = new H.map.Marker(pos);
         map.addObject(currentPosition);
+
+        //get the coordinates if navigating is on
+        if(navigating===true){
+            positionArray.push(pos);
+        }
     }
 
     function geo_error() {
@@ -51,10 +58,14 @@ $(() => {
     $('#nav_button').click(function () {
         if (!navigating) {
             navigating = true;
+            positionArray = [];
             $(this).html('Stop Navigation');
+
         }
         else {
             navigating = false;
+            if(positionArray.length>1){
+            $.post('/post/path', {path:positionArray});}
             $(this).html('Start Navigation');
         }
     })
