@@ -68,7 +68,9 @@ function applyGraphToModel(graph) {
     {
         let d = getDirection(c.a.x-c.b.x,c.a.y-c.b.y);
         let oldWeight = model[c.a.x][c.a.y].connection[d].weight;
+        console.log(oldWeight)
         let adjustment = (((oldWeight+normalizeTime(c.time))/2)-oldWeight)/model[c.a.x][c.a.y].connection[d].frequency;
+        console.log(adjustment);
         model[c.a.x][c.a.y].connection[d].weight = oldWeight+adjustment;
         model[c.a.x][c.a.y].connection[d].frequency++;
         d=(d+2)%4;
@@ -115,7 +117,7 @@ function convertToGraph(graph) {
         let surroundings = [{x:q.x-1, y:q.y, dir:3}, {x:q.x+1, y:q.y, dir:1}, {x:q.x, y:q.y-1, dir:2}, {x:q.x, y:q.y+1, dir:0}];
         for (let n of surroundings) {
             if (route[ptoh(n)]) {
-                connections.push({a:{x:q.x, y:q.y}, b:{x:n.x, y:n.y}, weight: Math.abs(n.timestamp-q.timestamp)});
+                connections.push({a:{x:q.x, y:q.y}, b:{x:n.x, y:n.y}, time: Math.abs(route[ptoh(n)].time-q.time)});
             }
         }
         route[i] = undefined;
