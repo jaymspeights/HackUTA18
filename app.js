@@ -44,8 +44,6 @@ app.post('/post/path', (req, res) => {
     res.status(200).send('success');
 });
 
-let httpServer = http.createServer(app);
-
 if (!noHTTPS) {
     let privateKey  = fs.readFileSync(KEY, 'utf8');
     let certificate = fs.readFileSync(CERT, 'utf8');
@@ -53,12 +51,14 @@ if (!noHTTPS) {
     let credentials = {key: privateKey, cert: certificate};
     let httpsServer = https.createServer(credentials, app);
 
-    httpServer.get('/*', function(req, res) {
+    http.get('/*', function(req, res) {
         res.redirect('https://' + req.headers.host + req.url);
     });
     console.log(`Listening on 43`);
     httpsServer.listen(43);
 }
+
+let httpServer = http.createServer(app);
 
 console.log(`Listening on ${PORT}`);
 httpServer.listen(PORT);
