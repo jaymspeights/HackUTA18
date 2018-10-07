@@ -30,7 +30,7 @@ module.exports = {
 };
 
 let model;
-let DEFAULT_WEIGHT = 1;
+let DEFAULT_WEIGHT = 2;
 
 const PRECISION = 1000000;
 const LAT_SCALE = 135;
@@ -126,7 +126,7 @@ function convertToGraph(graph) {
 }
 
 let MinHeap = require('min-heap');
-let h_scalar = 1;
+let h_scalar = 2;
 function aStar(graph, start, end) {
     let open_min = new MinHeap(function(l,r) {
         return l.f - r.f;
@@ -150,7 +150,7 @@ function aStar(graph, start, end) {
             }
             successor.g = q.g + graph[q.x][q.y].connection[successor.dir].weight;
             successor.h = (Math.abs(end.x - successor.x) + Math.abs(end.y - successor.y)) * h_scalar;
-            successor.f = Math.pow(successor.g + successor.h, 2);
+            successor.f = successor.g + successor.h;
             if (open_f[ptoh(successor)] && open_f[ptoh(successor)] <= successor.f)
                 continue;
             if (!closed_f[ptoh(successor)] || closed_f[ptoh(successor)] > successor.f) {
