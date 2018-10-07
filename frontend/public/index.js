@@ -52,13 +52,51 @@ $(() => {
         }
     }
 
-    // Add event listener:
+    // // Add event listener:
     map.addEventListener('drag', function(evt) {
         // Log 'tap' and 'mouse' events:
         if (blazing) {
             $('#autofollow_button').show();
             dragged = true;
         }
+    }, false);
+
+    map.addEventListener('tap', function(evt) {
+        var icon = new H.map.Icon('finish_image.png');
+        let coord = map.screenToGeo(evt.currentPointer.viewportX,
+            evt.currentPointer.viewportY);
+        let marker =  new H.map.Marker(coord, { icon: icon });
+        marker.draggable = true;
+        map.addObject(marker);
+
+        // disable the default draggability of the underlying map
+        // when starting to drag a marker object:
+        map.addEventListener('dragstart', function(ev) {
+            let target = ev.target;
+            if (target instanceof H.map.Marker) {
+                behavior.disable();
+            }
+        }, false);
+
+
+        // re-enable the default draggability of the underlying map
+        // when dragging has completed
+        map.addEventListener('dragend', function(ev) {
+            var target = ev.target;
+            if (target instanceof mapsjs.map.Marker) {
+                behavior.enable();
+            }
+        }, false);
+
+        // Listen to the drag event and move the position of the marker
+        // as necessary
+        map.addEventListener('drag', function(ev) {
+            var target = ev.target,
+                pointer = ev.currentPointer;
+            if (target instanceof mapsjs.map.Marker) {
+                target.setPosition(map.screenToGeo(pointer.viewportX, pointer.viewportY));
+            }
+        }, false);S
     });
 
     function geo_error() {
@@ -71,7 +109,7 @@ $(() => {
 
     let wpid = navigator.geolocation.watchPosition(geo_success, geo_error, geo_options);
 
-    
+
     let blazing = false;
     $('#main_button').click(function () {
         if (!blazing) {
@@ -95,9 +133,7 @@ $(() => {
         dragged = false;
         map.setCenter(currentPosition,true);
         $(this).hide();
-    })
-
-
+    });
 
     function drawPath(points) {
         // Initialize a linestring and add all the points to it:
