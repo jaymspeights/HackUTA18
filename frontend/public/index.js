@@ -25,23 +25,41 @@ $(() => { //loads everything when the page loads
 
     var positionArray = [];
 
+    var currentMarker;
     var currentPosition;
+    var dragged = false;
     function geo_success(position) {
         console.log("GOT AN EVENT", position);
         let pos = {lat:position.coords.latitude, lng:position.coords.longitude};
-        console.log(pos);
-        if (currentPosition)
-            map.removeObject(currentPosition);
-        map.setCenter(pos);
-        map.setZoom(14);
-        currentPosition = new H.map.Marker(pos);
-        map.addObject(currentPosition);
+        console.log(pos)
+        currentPosition = pos;
+        if (!currentMarker) {
+            map.setCenter(pos);
+            map.setZoom(14);
+        } else {
+            map.removeObject(currentMarker);
+        }
+
+        if(currentMarker && !dragged && navigating){
+            map.setCenter(pos);
+        }
+        currentMarker = new H.map.Marker(pos);
+        map.addObject(currentMarker);
 
         //get the coordinates if navigating is on
         if(navigating===true){
             positionArray.push(pos);
         }
     }
+
+    // Add event listener:
+    map.addEventListener('drag', function(evt) {
+        // Log 'tap' and 'mouse' events:
+        if (navigating) {
+            $('#autofollow_button').show();
+            dragged = true;
+        }
+    });
 
     function geo_error() {
         alert("Sorry, no position available.");
@@ -57,16 +75,25 @@ $(() => { //loads everything when the page loads
     let navigating = false;
     $('#nav_button').click(function () {
         if (!navigating) {
+            dragged = false;
+            map.setCenter(currentPosition);
+            $('#autofollow_button').hide();
             navigating = true;
             positionArray = [];
             $(this).html('Stop Navigation');
-
         }
         else {
             navigating = false;
             if(positionArray.length>1){
-            $.post('/post/path', {path:positionArray});}
+            $.post('/post/path', {path:positionArray});
+            currentMarker = false;
+            dragged = false;}
             $(this).html('Start Navigation');
         }
+    })
+    $('#autofollow_button').click(function () {
+        dragged = false;
+        map.setCenter(currentPosition);
+        $(this).hide();
     })
 });
