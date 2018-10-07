@@ -150,7 +150,7 @@ function aStar(graph, start, end) {
             }
             successor.g = q.g + graph[q.x][q.y].connection[successor.dir].weight;
             successor.h = (Math.abs(end.x - successor.x) + Math.abs(end.y - successor.y)) * h_scalar;
-            successor.f = successor.g + successor.h;
+            successor.f = Math.pow(successor.g + successor.h, 2);
             if (open_f[ptoh(successor)] && open_f[ptoh(successor)] <= successor.f)
                 continue;
             if (!closed_f[ptoh(successor)] || closed_f[ptoh(successor)] > successor.f) {
