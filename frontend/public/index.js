@@ -1,4 +1,20 @@
 $(() => {
+
+    function title () {
+        $(".speech").hide();
+        $("#finish_image").show();
+        setTimeout(speech, 4000);
+    }
+
+    function speech () {
+        $("#finish_image").hide();
+        $(".speech").hide();
+        $("#finish_image_"+Math.floor(Math.random()*3)).show();
+        setTimeout(title, 3000);
+    }
+
+    setTimeout(speech, 4000);
+
     //Step 1: initialize communication with the platform
     var platform = new H.service.Platform({
         app_id: 'hBKWpC8wTfRmbT3BK7K5',

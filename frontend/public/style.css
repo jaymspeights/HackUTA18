@@ -60,6 +60,10 @@ body {
     width: 100%;
     pointer-events: none
 }
+.speech {
+    width: 100%;
+    pointer-events: none
+}
 #finish_icon {
     width: 23%;
     position: absolute;
