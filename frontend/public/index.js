@@ -28,10 +28,10 @@ $(() => {
     var currentMarker;
     var currentPosition;
     var dragged = false;
+    var startTime = new Date().getTime();
     function geo_success(position) {
         console.log("GOT AN EVENT", position);
-        let pos = {lat:position.coords.latitude, lng:position.coords.longitude};
-        console.log(pos)
+        let pos = {lat:position.coords.latitude, lng:position.coords.longitude, timestamp:(new Date().getTime())-startTime};
         currentPosition = pos;
         if (!currentMarker) {
             map.setCenter(pos,true);
@@ -52,22 +52,28 @@ $(() => {
         }
     }
 
-    // // Add event listener:
+    // Add event listener:
     map.addEventListener('drag', function(evt) {
         // Log 'tap' and 'mouse' events:
-        if (blazing) {
+        if (blazing || navigation) {
             $('#autofollow_button').show();
             dragged = true;
         }
     }, false);
 
+    let marker;
+    let dest_coord;
     map.addEventListener('tap', function(evt) {
+        if (marker)
+            map.removeObject(marker);
         var icon = new H.map.Icon('finish_image.png');
         let coord = map.screenToGeo(evt.currentPointer.viewportX,
             evt.currentPointer.viewportY);
-        let marker =  new H.map.Marker(coord, { icon: icon });
+        dest_coord = coord;
+        marker =  new H.map.Marker(coord, { icon: icon });
         marker.draggable = true;
         map.addObject(marker);
+        $('#main_button').html('Begin Navigation');
 
         // disable the default draggability of the underlying map
         // when starting to drag a marker object:
@@ -96,7 +102,7 @@ $(() => {
             if (target instanceof mapsjs.map.Marker) {
                 target.setPosition(map.screenToGeo(pointer.viewportX, pointer.viewportY));
             }
-        }, false);S
+        }, false);
     });
 
     function geo_error() {
@@ -109,10 +115,10 @@ $(() => {
 
     let wpid = navigator.geolocation.watchPosition(geo_success, geo_error, geo_options);
 
-
     let blazing = false;
+    let navigation = false;
     $('#main_button').click(function () {
-        if (!blazing) {
+        if (!blazing && !dest_coord) {
             dragged = false;
             map.setCenter(currentPosition,true);
             $('#autofollow_button').hide();
@@ -120,20 +126,26 @@ $(() => {
             positionArray = [];
             $(this).html('Stop Navigation');
         }
-        else {
+        else if (!dest_coord){
             blazing = false;
             if(positionArray.length>1){
             $.post('/post/path', {path:positionArray});
             currentMarker = false;
             dragged = false;}
             $(this).html('Start Navigation');
+        } else {
+            $.get(`/get/path?latA=${currentPosition.lat}&lngA=${currentPosition.lng}&latB=${dest_coord.lat}&lngB=${dest_coord.lng}`, (res, err) => {
+               console.log(res, err);
+            });
         }
     })
     $('#autofollow_button').click(function () {
         dragged = false;
         map.setCenter(currentPosition,true);
         $(this).hide();
-    });
+    })
+
+
 
     function drawPath(points) {
         // Initialize a linestring and add all the points to it:
@@ -156,6 +168,10 @@ $(() => {
     }
 
     function enterNavMode(points) {
-
+        navigation = true;
+        blazing = false;
+        $('#autofollow_button').hide();
+        $('#main_button').prop('value', 'Start Navigating');
+        dragged = false;
     }
 });
