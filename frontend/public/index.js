@@ -118,6 +118,14 @@ $(() => {
     let blazing = false;
     let navigation = false;
     $('#main_button').click(function () {
+        if (navigation) {
+            map.removeObject(marker);
+            marker = null;
+            $('#main_button').html('Create a New Path');
+            navigation = false;
+            polyline = undefined;
+            map.removeObject(polyline_o);
+        }
         if (!blazing && !dest_coord) {
             dragged = false;
             map.setCenter(currentPosition,true);
@@ -134,44 +142,45 @@ $(() => {
             dragged = false;}
             $(this).html('Start Navigation');
         } else {
-            $.get(`/get/path?latA=${currentPosition.lat}&lngA=${currentPosition.lng}&latB=${dest_coord.lat}&lngB=${dest_coord.lng}`, (res, err) => {
-               console.log(res, err);
+            $.get(`/get/path?latA=${currentPosition.lat}&lngA=${currentPosition.lng}&latB=${dest_coord.lat}&lngB=${dest_coord.lng}`, (res, success) => {
+                enterNavMode(res)
             });
         }
-    })
+    });
     $('#autofollow_button').click(function () {
         dragged = false;
         map.setCenter(currentPosition,true);
         $(this).hide();
-    })
+    });
 
 
-
+    let polyline_o;
     function drawPath(points) {
         // Initialize a linestring and add all the points to it:
         var linestring = new H.geo.LineString();
         points.forEach(function(point) {
+            console.log(point)
             linestring.pushPoint(point);
         });
 
         // Initialize a polyline with the linestring:
-        var polyline = new H.map.Polyline(linestring, {
+        let polyline = new H.map.Polyline(linestring, {
             style: { lineWidth: 10 },
             arrows: { fillColor: 'white', frequency: 2, width: 0.8, length: 0.7 }
         });
-
         // Add the polyline to the map:
-        map.addObject(polyline);
+        polyline_o = map.addObject(polyline);
 
         // Zoom the map to make sure the whole polyline is visible:
         map.setViewBounds(polyline.getBounds());
     }
 
     function enterNavMode(points) {
+        drawPath(points);
         navigation = true;
         blazing = false;
         $('#autofollow_button').hide();
-        $('#main_button').prop('value', 'Start Navigating');
+        $('#main_button').html('Stop Navigating');
         dragged = false;
     }
 });
