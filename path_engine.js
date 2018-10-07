@@ -8,76 +8,54 @@ module.exports = {
     }
 };
 
-
-
-
-const problem = {
-    start: {A: 5, B: 2},
-    A: {C: 4, D: 2},
-    B: {A: 8, D: 7},
-    C: {D: 6, finish: 3},
-    D: {finish: 1},
-    finish: {}
-};
-
-const lowestCostNode = (costs, processed) => {
-    return Object.keys(costs).reduce((lowest, node) => {
-        if (lowest === null || costs[node] < costs[lowest]) {
-            if (!processed.includes(node)) {
-                lowest = node;
+let MinHeap = require('min-heap');
+let h_scalar = 1;
+function aStar(graph, start, end) {
+    let open_min = new MinHeap(function(l,r) {
+        return l.f - r.f;
+    });
+    let open_f = {};
+    let closed = [];
+    let closed_f = [];
+    open_min.insert(start);
+    open_f[ptoh(start)] = start.f;
+    start.f = 0;
+    start.g = 0;
+    start.h = (Math.abs(end.x - start.x) + Math.abs(end.y - start.y)) * h_scalar;
+    while (open_min.size > 0) {
+        let q = open_min.removeHead();
+        let surroundings = [{x:q.x-1, y:q.y, dir:3}, {x:q.x+1, y:q.y, dir:1}, {x:q.x, y:q.y-1, dir:2}, {x:q.x, y:q.y+1, dir:0}];
+        for (let successor of surroundings) {
+            successor.parent = q;
+            if (!graph[successor.x] || !graph[successor.x][successor.y]) continue;
+            if (successor.x == end.x && successor.y == end.y) {
+                return tracePath(successor);
+            }
+            successor.g = q.g + graph[q.x][q.y].connection[successor.dir].weight;
+            successor.h = (Math.abs(end.x - successor.x) + Math.abs(end.y - successor.y)) * h_scalar;
+            successor.f = successor.g + successor.h;
+            if (open_f[ptoh(successor)] && open_f[ptoh(successor)] <= successor.f)
+                continue;
+            if (!closed_f[ptoh(successor)] || closed_f[ptoh(successor)] > successor.f) {
+                open_min.insert(successor);
+                open_f[ptoh(successor)] = successor.f;
             }
         }
-        return lowest;
-    }, null);
-};
-
-// function that returns the minimum cost and path to reach Finish
-const dijkstra = (graph) => {
-
-    // track lowest cost to reach each node
-    const costs = Object.assign({finish: Infinity}, graph.start);
-
-    // track paths
-    const parents = {finish: null};
-    for (let child in graph.start) {
-        parents[child] = 'start';
+        closed.push(q);
+        closed_f[ptoh(q)] = q.f;
     }
+    console.log("Failed to find path?", closed);
+}
 
-    // track nodes that have already been processed
-    const processed = [];
+function ptoh(node) {
+    return node.x+'_'+node.y;
+}
 
-    let node = lowestCostNode(costs, processed);
-
+function tracePath(node) {
+    let path = [];
     while (node) {
-        let cost = costs[node];
-        let children = graph[node];
-        for (let n in children) {
-            let newCost = cost + children[n];
-            if (!costs[n]) {
-                costs[n] = newCost;
-                parents[n] = node;
-            }
-            if (costs[n] > newCost) {
-                costs[n] = newCost;
-                parents[n] = node;
-            }
-        }
-        processed.push(node);
-        node = lowestCostNode(costs, processed);
+        path.push({x:node.x, y:node.y});
+        node = node.parent;
     }
-
-    let optimalPath = ['finish'];
-    let parent = parents.finish;
-    while (parent) {
-        optimalPath.push(parent);
-        parent = parents[parent];
-    }
-    optimalPath.reverse();
-
-    const results = {
-        distance: costs.finish,
-        path: optimalPath
-    };
-
-    return results;
-};
+    return path;
+}
