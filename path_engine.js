@@ -4,7 +4,14 @@ module.exports = {
         return [a, b]; //expected return is list of points starting with a and ending with b
     },
     addPath: function (path) { //when user wants to add path to data model
-        console.log(path);
+        //console.log(path);
+        let lat;
+        let lng;
+        for (let coord in path) {
+            lat=Math.floor(((coord.lat+90)*1000000));
+            lng=Math.floor(((coord.lng+180)*1000000));
+            console.log("Lat: "+lat+" Lng: "+lng);
+        }
     }
 };
 
