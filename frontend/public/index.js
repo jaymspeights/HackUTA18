@@ -123,9 +123,9 @@ $(() => {
             $('#main_button').html('Create a New Path');
             navigation = false;
             polyline = undefined;
-            map.removeObject(polyline_o);
+            map.removeObject(polyline);
         }
-        if (!blazing && !dest_coord) {
+        else if (!blazing && !dest_coord) {
             dragged = false;
             map.setCenter(currentPosition,true);
             $('#autofollow_button').hide();
