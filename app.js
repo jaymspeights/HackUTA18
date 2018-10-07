@@ -53,8 +53,8 @@ if (!noHTTPS) {
     let credentials = {key: privateKey, cert: certificate};
     let httpsServer = https.createServer(credentials, app);
 
-    console.log(`Listening on 43`);
-    httpsServer.listen(43);
+    console.log(`Listening on 443`);
+    httpsServer.listen(443);
 }
 
 console.log(`Listening on ${PORT}`);
