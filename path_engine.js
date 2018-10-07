@@ -11,8 +11,7 @@ module.exports = {
     },
     addPath: function (data) { //when user wants to add path to data model
         let graph = convertToGraph(data);
-        if (graph)
-            applyGraphToModel(graph);
+        if (graph) applyGraphToModel(graph);
         let res = [];
         for (let i = 0; i < model.length; i++) {
             res[i]=[];
@@ -66,27 +65,6 @@ function initModel(default_weight) {
 initModel(DEFAULT_WEIGHT);
 
 function applyGraphToModel(graph) {
-    let connections = [];
-    let route = {};
-    for (let point of graph.path) {
-        let coord = gpsToGrid(point);
-        if (!route[ptoh(coord)])
-            route[ptoh(coord)] = {x:coord.x, y:coord.y, time:point.timestamp};
-        else if (route[ptoh(coord)].time > point.timestamp)
-            route[ptoh(coord)].time = point.timestamp;
-    }
-    for (let i in route) {
-        let q = route[i];
-        let surroundings = [{x:q.x-1, y:q.y, dir:3}, {x:q.x+1, y:q.y, dir:1}, {x:q.x, y:q.y-1, dir:2}, {x:q.x, y:q.y+1, dir:0}];
-        for (let n of surroundings) {
-            if (route[ptoh(n)]) {
-                connections.push({a:{x:q.x, y:q.y}, b:{x:n.x, y:n.y}, weight: Math.abs(n.timestamp-q.timestamp)});
-            }
-        }
-        route[i] = undefined;
-    }
-    return connections;
-
     for(let c of graph)
     {
         let d = getDirection(c.a.x-c.b.x,c.a.y-c.b.y);
@@ -122,11 +100,28 @@ function getDirection(a,b){
 
 //returns a weighted graph
 // [{a:{x,y}, b:{x,y}, weight:time}]
-function convertToGraph(data) {
-    for (let point of data.path) {
-        console.log(point.lat + " " + point.lng);
-        console.log(gpsToGrid(point));
+function convertToGraph(graph) {
+    let connections = [];
+    let route = {};
+    for (let point of graph.path) {
+        let coord = gpsToGrid(point);
+        if (!route[ptoh(coord)])
+            route[ptoh(coord)] = {x:coord.x, y:coord.y, time:point.timestamp};
+        else if (route[ptoh(coord)].time > point.timestamp) {
+            route[ptoh(coord)].time = point.timestamp;
+        }
     }
+    for (let i in route) {
+        let q = route[i];
+        let surroundings = [{x:q.x-1, y:q.y, dir:3}, {x:q.x+1, y:q.y, dir:1}, {x:q.x, y:q.y-1, dir:2}, {x:q.x, y:q.y+1, dir:0}];
+        for (let n of surroundings) {
+            if (route[ptoh(n)]) {
+                connections.push({a:{x:q.x, y:q.y}, b:{x:n.x, y:n.y}, weight: Math.abs(n.timestamp-q.timestamp)});
+            }
+        }
+        route[i] = undefined;
+    }
+    return connections;
 }
 
 let MinHeap = require('min-heap');
