@@ -3,25 +3,27 @@ body {
     margin: 0;
 }
 
-#nav_button {
+#main_button {
     background-color: #1f262a;
     color: white;
     position: absolute;
     bottom: 20px;
     left: 50%;
-    width: 150px;
+    width: 200px;
+    margin-left: -100px;
+    margin-bottom: 0;
     height: 50px;
     border-radius: 10px;
     border: none;
     box-shadow: 1px 2px 4px rgba(0,0,0,.2);
 }
-#nav_button:focus {
+#main_button:focus {
     outline:0;
 }
-#nav_button:hover {
+#main_button:hover {
     box-shadow: 2px 3px 6px rgba(0,0,0,.2);
 }
-#nav_button:active {
+#main_button:active {
     box-shadow: none;
 }
 
@@ -29,8 +31,8 @@ body {
     background-color: #1f262a;
     color: white;
     position: absolute;
-    bottom: 20px;
-    left: 3%;
+    bottom: 23%;
+    right: 5px;
     width: 30px;
     height: 30px;
     border-radius: 10px;
@@ -45,4 +47,21 @@ body {
 }
 #autofollow_button:active {
     box-shadow: none;
+}
+#finish_container {
+    position: absolute;
+    top:0;
+    left:0;
+    width: 100%;
+    pointer-events: none
+}
+#finish_image {
+    width: 100%;
+    pointer-events: none
+}
+#finish_icon {
+    width: 23%;
+    position: absolute;
+    right: 5px;
+    top: 20px;
 }

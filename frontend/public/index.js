@@ -73,7 +73,7 @@ $(() => {
 
     
     let navigating = false;
-    $('#nav_button').click(function () {
+    $('#main_button').click(function () {
         if (!navigating) {
             dragged = false;
             map.setCenter(currentPosition,true);
