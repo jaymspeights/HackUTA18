@@ -26,6 +26,14 @@ process.argv.forEach((val, index, array) => {
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
+if (!noHTTPS) {
+    app.all('*', (req, res, next) => {
+        if(req.secure)
+            return next();
+        res.redirect('https://' + req.hostname + req.url); // express 4.x
+    });
+}
+
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -44,12 +52,6 @@ app.post('/post/path', (req, res) => {
 });
 
 if (!noHTTPS) {
-    app.all('*', (req, res, next) => {
-        if(req.secure)
-            return next();
-        res.redirect('https://' + req.hostname + req.url); // express 4.x
-    });
-
     let https = require('https');
 
     let privateKey  = fs.readFileSync(KEY, 'utf8');
