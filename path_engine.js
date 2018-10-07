@@ -27,10 +27,41 @@ function gpsToGrid(point) {
 
 function applyGraphToModel(graph) {
 
+    for(let c of graph)
+    {
+        let d = getDirection(c.a.x-c.b.x,c.a.y-c.b.y);
+        let oldWeight = model[c.a.x][c.a.y].connection[d].weight;
+        let adjustment = (((oldWeight+normalizeTime(c.time))/2)-oldWeight)/model[c.a.x][c.a.y].connection[d].frequency;
+        model[c.a.x][c.a.y].connection[d].weight = oldWeight+adjustment;
+        model[c.a.x][c.a.y].connection[d].frequency++;
+        d=(d+2)%4;
+        model[c.b.x][c.b.y].connection[d].weight = oldWeight+adjustment;
+        model[c.b.x][c.b.y].connection[d].frequency++;
+    }
+
+}
+const COEF = (1/(.7*Math.sqrt(2*Math.PI)));
+function normalizeTime(time)
+{
+    let value = COEF*Math.exp(-Math.pow((time/1000)-2,2)/(.98));
+    if(time<2000)
+        return value;
+    else
+        return 1-value;
+}
+function getDirection(a,b){
+    if(b===1)
+        return 0;
+    if(a===1)
+        return 1;
+    if(b===-1)
+        return 2;
+    else
+        return 3;
 }
 
 //returns a weighted graph
-// [{start:{}, end:{}, weight:number}]
+// [{a:{x,y}, b:{x,y}, weight:time}]
 function convertToGraph(data) {
     for (let point of data.path)
         console.log(gpsToGrid(point));
