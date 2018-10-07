@@ -53,7 +53,7 @@ if (!noHTTPS) {
     let credentials = {key: privateKey, cert: certificate};
     let httpsServer = https.createServer(credentials, app);
 
-    http.get('*', function(req, res) {
+    httpServer.get('/*', function(req, res) {
         res.redirect('https://' + req.headers.host + req.url);
     });
     console.log(`Listening on 43`);
