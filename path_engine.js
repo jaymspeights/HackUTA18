@@ -81,12 +81,3 @@ const dijkstra = (graph) => {
 
     return results;
 };
-
-/*function dijkstra(graph, startNode){
-    var pathCalc = [];
-
-    for (let connection in graph[node].connection){
-        var node = {name: graph.name, totalPathLength: graph.connections.weight + pathCalc.prevNode.totalPathLength}
-    }
-
-}*/

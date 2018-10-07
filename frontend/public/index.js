@@ -1,4 +1,4 @@
-$(() => {
+$(() => { //loads everything when the page loads
     //Step 1: initialize communication with the platform
     var platform = new H.service.Platform({
         app_id: 'hBKWpC8wTfRmbT3BK7K5',
@@ -29,7 +29,7 @@ $(() => {
     function geo_success(position) {
         console.log("GOT AN EVENT", position);
         let pos = {lat:position.coords.latitude, lng:position.coords.longitude};
-        console.log(pos)
+        console.log(pos);
         if (currentPosition)
             map.removeObject(currentPosition);
         map.setCenter(pos);
