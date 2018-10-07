@@ -34,14 +34,14 @@ $(() => {
         console.log(pos)
         currentPosition = pos;
         if (!currentMarker) {
-            map.setCenter(pos);
+            map.setCenter(pos,true);
             map.setZoom(14);
         } else {
             map.removeObject(currentMarker);
         }
 
         if(currentMarker && !dragged && navigating){
-            map.setCenter(pos);
+            map.setCenter(pos,true);
         }
         currentMarker = new H.map.Marker(pos);
         map.addObject(currentMarker);
@@ -76,7 +76,7 @@ $(() => {
     $('#nav_button').click(function () {
         if (!navigating) {
             dragged = false;
-            map.setCenter(currentPosition);
+            map.setCenter(currentPosition,true);
             $('#autofollow_button').hide();
             navigating = true;
             positionArray = [];
@@ -93,7 +93,7 @@ $(() => {
     })
     $('#autofollow_button').click(function () {
         dragged = false;
-        map.setCenter(currentPosition);
+        map.setCenter(currentPosition,true);
         $(this).hide();
     })
 });
