@@ -15,16 +15,17 @@ module.exports = {
             applyGraphToModel(graph);
         let res = [];
         for (let i in model) {
-            res.push([]);
-            for (let j in i) {
+            res[i]=[];
+            for (let j in model[i]) {
                 let n = {};
                 let coord = gridToGps({x:i, y:j});
                 n.x = coord.lng;
                 n.y = coord.lat;
                 n.connection = model[i][j].connection;
-                res[res.length-1].push(n);
+                res[i].push(n);
             }
         }
+        console.log(res.length, res[0].length);
         return res;
     }
 };
