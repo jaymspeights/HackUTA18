@@ -3,17 +3,38 @@ module.exports = {
 
         return [a, b]; //expected return is list of points starting with a and ending with b
     },
-    addPath: function (path) { //when user wants to add path to data model
-        //console.log(path);
-        let lat;
-        let lng;
-        for (let coord in path) {
-            lat=Math.floor(((coord.lat+90)*1000000));
-            lng=Math.floor(((coord.lng+180)*1000000));
-            console.log("Lat: "+lat+" Lng: "+lng);
-        }
+    addPath: function (data) { //when user wants to add path to data model
+        let graph = convertToGraph(data);
+        if (graph)
+            applyGraphToModel(graph);
     }
 };
+
+const PERCISION = 1000000;
+const LAT_SCALE = 45
+const LNG_SCALE = 39;
+const LEFT = Math.floor(82885452/39);
+const BOTTOM = Math.floor(122730852/45);
+const X_MAX = Math.ceil(82890098/39) - LEFT;
+const Y_MAX = Math.ceil(122733741/45) - BOTTOM;
+function gpsToGrid(point) {
+    let x=Math.round(Math.floor((+point.lng+180)*PERCISION)/LNG_SCALE) - LEFT;
+    let y=Math.round(Math.floor((+point.lat+90)*PERCISION)/LAT_SCALE) - BOTTOM;
+    return {x:x, y:y};
+}
+
+
+
+function applyGraphToModel(graph) {
+
+}
+
+//returns a weighted graph
+// [{start:{}, end:{}, weight:number}]
+function convertToGraph(data) {
+    for (let point of data.path)
+        console.log(gpsToGrid(point));
+}
 
 let MinHeap = require('min-heap');
 let h_scalar = 1;
