@@ -5,7 +5,6 @@ let KEY = '/etc/letsencrypt/live/walkmeamadeus.net/privkey.pem';
 
 let fs = require('fs');
 let http = require('http');
-let https = require('https');
 let express = require('express');
 let app = express();
 
@@ -27,6 +26,14 @@ process.argv.forEach((val, index, array) => {
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
+if (!noHTTPS) {
+    app.all('*', (req, res, next) => {
+        if(req.secure)
+            return next();
+        res.redirect('https://' + req.hostname + req.url); // express 4.x
+    });
+}
+
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -45,20 +52,18 @@ app.post('/post/path', (req, res) => {
 });
 
 if (!noHTTPS) {
+    let https = require('https');
+
     let privateKey  = fs.readFileSync(KEY, 'utf8');
     let certificate = fs.readFileSync(CERT, 'utf8');
 
     let credentials = {key: privateKey, cert: certificate};
     let httpsServer = https.createServer(credentials, app);
 
-    http.get('/*', function(req, res) {
-        res.redirect('https://' + req.headers.host + req.url);
-    });
-    console.log(`Listening on 43`);
-    httpsServer.listen(43);
+    console.log(`Listening on 443`);
+    httpsServer.listen(443);
 }
 
-let httpServer = http.createServer(app);
-
 console.log(`Listening on ${PORT}`);
+let httpServer = http.createServer(app);
 httpServer.listen(PORT);
