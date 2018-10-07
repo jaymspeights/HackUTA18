@@ -4,9 +4,9 @@ let CERT = '/etc/letsencrypt/live/walkmeamadeus.net/fullchain.pem';
 let KEY = '/etc/letsencrypt/live/walkmeamadeus.net/privkey.pem';
 
 let fs = require('fs');
-let http = require('http');
 let https = require('https');
 let express = require('express');
+let http = express.createServer();
 let app = express();
 
 let noHTTPS = false;
