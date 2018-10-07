@@ -4,7 +4,7 @@ let CERT = '/etc/letsencrypt/live/walkmeamadeus.net/fullchain.pem';
 let KEY = '/etc/letsencrypt/live/walkmeamadeus.net/privkey.pem';
 
 let fs = require('fs');
-let https = require('https');
+let http = require('http');
 let express = require('express');
 let app = express();
 
@@ -44,8 +44,13 @@ app.post('/post/path', (req, res) => {
 });
 
 if (!noHTTPS) {
-    let httpsRedirect = require('express-https-redirect');
-    app.use('/', httpsRedirect());
+    app.all('*', (req, res, next) => {
+        if(req.secure)
+            return next();
+        res.redirect('https://' + req.hostname + req.url); // express 4.x
+    });
+
+    let https = require('https');
 
     let privateKey  = fs.readFileSync(KEY, 'utf8');
     let certificate = fs.readFileSync(CERT, 'utf8');
@@ -58,4 +63,5 @@ if (!noHTTPS) {
 }
 
 console.log(`Listening on ${PORT}`);
-app.listen(PORT);
+let httpServer = http.createServer(app);
+httpServer.listen(PORT);
