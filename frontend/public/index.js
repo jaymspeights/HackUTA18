@@ -96,4 +96,26 @@ $(() => {
         map.setCenter(currentPosition,true);
         $(this).hide();
     })
+
+    function drawPath(points) {
+        // Initialize a linestring and add all the points to it:
+        var linestring = new H.geo.LineString();
+        points.forEach(function(point) {
+            linestring.pushPoint(point);
+        });
+
+        // Initialize a polyline with the linestring:
+        var polyline = new H.map.Polyline(linestring, {
+            style: { lineWidth: 10 },
+            arrows: { fillColor: 'white', frequency: 2, width: 0.8, length: 0.7 }
+        });
+
+        // Add the polyline to the map:
+        map.addObject(polyline);
+
+        // Zoom the map to make sure the whole polyline is visible:
+        map.setViewBounds(polyline.getBounds());
+    }
+
+
 });
