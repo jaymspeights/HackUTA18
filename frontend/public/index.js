@@ -138,6 +138,7 @@ $(() => {
             blazing = false;
             if(positionArray.length>1){
             $.post('/post/path', {path:positionArray});
+            map.removeObject(currentMarker); //should get rid of blue dot error
             currentMarker = false;
             dragged = false;}
             $(this).html('Start Navigation');
