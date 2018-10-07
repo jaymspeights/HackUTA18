@@ -1,5 +1,4 @@
-//
-/*module.exports = {
+module.exports = {
     getPath: function (a, b) { //when user wants to navigate from a to b
 
         return [a, b]; //expected return is list of points starting with a and ending with b
@@ -8,7 +7,6 @@
         console.log(path);
     }
 };
-*/
 
 
 
@@ -83,8 +81,6 @@ const dijkstra = (graph) => {
 
     return results;
 };
-
-console.log(dijkstra(problem));
 
 /*function dijkstra(graph, startNode){
     var pathCalc = [];
