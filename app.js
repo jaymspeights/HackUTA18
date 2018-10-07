@@ -43,7 +43,7 @@ app.use(function(req, res, next) {
 app.use(express.static('frontend/public'));
 
 app.get('/get/path', (req, res) =>  {
-    res.send(path_engine.getPath(req.query.a, req.query.b));
+    res.send(path_engine.getPath({lng:req.query.lngA, lat:req.query.latA}, {lng:req.query.lngB, lat:req.query.latB}));
 });
 
 app.post('/post/path', (req, res) => {
