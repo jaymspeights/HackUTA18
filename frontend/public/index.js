@@ -55,7 +55,7 @@ $(() => {
     // Add event listener:
     map.addEventListener('drag', function(evt) {
         // Log 'tap' and 'mouse' events:
-        if (blazing) {
+        if (blazing || navigation) {
             $('#autofollow_button').show();
             dragged = true;
         }
@@ -73,6 +73,7 @@ $(() => {
 
     
     let blazing = false;
+    let navigation = false;
     $('#main_button').click(function () {
         if (!blazing) {
             dragged = false;
@@ -119,7 +120,13 @@ $(() => {
         map.setViewBounds(polyline.getBounds());
     }
 
-    function enterNavMode(points) {
 
+
+    function enterNavMode(points) {
+        navigation = true;
+        blazing = false;
+        $('#autofollow_button').hide();
+        $('#main_button').prop('value', 'Start Navigating');
+        dragged = false;
     }
 });
