@@ -1,29 +1,60 @@
 module.exports = {
     getPath: function (a, b) { //when user wants to navigate from a to b
-
-        return [a, b]; //expected return is list of points starting with a and ending with b
+        console.log(a, b)
+        return aStar(model, gpsToGrid(a), gpsToGrid(b)).reverse(); //expected return is list of points starting with a and ending with b
     },
     addPath: function (data) { //when user wants to add path to data model
         let graph = convertToGraph(data);
         if (graph)
             applyGraphToModel(graph);
+        let res = [];
+        for (let i of model) {
+            res.push([]);
+            for (let j of i) {
+                let n = j;
+                let coord = gridToGps(j);
+                n.x = coord.lng;
+                n.y = coord.lat;
+                res[res.length-1].push(n);
+            }
+        }
+        return res;
     }
 };
 
-const PERCISION = 1000000;
-const LAT_SCALE = 45
+let model;
+let DEFAULT_WEIGHT = 5;
+
+const PRECISION = 1000000;
+const LAT_SCALE = 45;
 const LNG_SCALE = 39;
 const LEFT = Math.floor(82885452/39);
 const BOTTOM = Math.floor(122730852/45);
 const X_MAX = Math.ceil(82890098/39) - LEFT;
 const Y_MAX = Math.ceil(122733741/45) - BOTTOM;
 function gpsToGrid(point) {
-    let x=Math.round(Math.floor((+point.lng+180)*PERCISION)/LNG_SCALE) - LEFT;
-    let y=Math.round(Math.floor((+point.lat+90)*PERCISION)/LAT_SCALE) - BOTTOM;
+    let x=Math.round(Math.floor((+point.lng+180)*PRECISION)/LNG_SCALE) - LEFT;
+    let y=Math.round(Math.floor((+point.lat+90)*PRECISION)/LAT_SCALE) - BOTTOM;
     return {x:x, y:y};
 }
 
+function gridToGps(point) {
+    let lng = point.x+ LEFT * LNG_SCALE / PRECISION - 180;
+    let lat = point.y+ BOTTOM * LAT_SCALE / PRECISION - 90;
+    return {lat:lat, lng:lng};
+}
 
+function initModel(default_weight) {
+    model = [];
+    for (let x = 0; x < X_MAX; x++) {
+        model[x] = [];
+        for (let y = 0; y < Y_MAX; y++) {
+            model[x][y] = {connection:[{weight: default_weight, frequency:1}, {weight: default_weight, frequency:1}, {weight: default_weight, frequency:1}, {weight: default_weight, frequency:1}]};
+            //TODO set bounds for not on model
+        }
+    }
+}
+initModel(DEFAULT_WEIGHT);
 
 function applyGraphToModel(graph) {
     let connections = [];
@@ -88,7 +119,7 @@ function convertToGraph(data) {
 }
 
 let MinHeap = require('min-heap');
-let h_scalar = 1;
+let h_scalar = 5;
 function aStar(graph, start, end) {
     let open_min = new MinHeap(function(l,r) {
         return l.f - r.f;
@@ -101,6 +132,7 @@ function aStar(graph, start, end) {
     start.f = 0;
     start.g = 0;
     start.h = (Math.abs(end.x - start.x) + Math.abs(end.y - start.y)) * h_scalar;
+    console.log(start, end);
     while (open_min.size > 0) {
         let q = open_min.removeHead();
         let surroundings = [{x:q.x-1, y:q.y, dir:3}, {x:q.x+1, y:q.y, dir:1}, {x:q.x, y:q.y-1, dir:2}, {x:q.x, y:q.y+1, dir:0}];
