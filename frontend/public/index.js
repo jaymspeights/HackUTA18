@@ -40,14 +40,14 @@ $(() => {
             map.removeObject(currentMarker);
         }
 
-        if(currentMarker && !dragged && navigating){
+        if(currentMarker && !dragged && blazing){
             map.setCenter(pos,true);
         }
         currentMarker = new H.map.Marker(pos);
         map.addObject(currentMarker);
 
-        //get the coordinates if navigating is on
-        if(navigating===true){
+        //get the coordinates if blazing is on
+        if(blazing===true){
             positionArray.push(pos);
         }
     }
@@ -55,7 +55,7 @@ $(() => {
     // Add event listener:
     map.addEventListener('drag', function(evt) {
         // Log 'tap' and 'mouse' events:
-        if (navigating) {
+        if (blazing) {
             $('#autofollow_button').show();
             dragged = true;
         }
@@ -72,18 +72,18 @@ $(() => {
     let wpid = navigator.geolocation.watchPosition(geo_success, geo_error, geo_options);
 
     
-    let navigating = false;
+    let blazing = false;
     $('#main_button').click(function () {
-        if (!navigating) {
+        if (!blazing) {
             dragged = false;
             map.setCenter(currentPosition,true);
             $('#autofollow_button').hide();
-            navigating = true;
+            blazing = true;
             positionArray = [];
             $(this).html('Stop Navigation');
         }
         else {
-            navigating = false;
+            blazing = false;
             if(positionArray.length>1){
             $.post('/post/path', {path:positionArray});
             currentMarker = false;
@@ -117,5 +117,7 @@ $(() => {
         map.setViewBounds(polyline.getBounds());
     }
 
+    function enterNavMode(points) {
 
+    }
 });
