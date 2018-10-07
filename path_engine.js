@@ -1,7 +1,13 @@
 module.exports = {
     getPath: function (a, b) { //when user wants to navigate from a to b
         console.log(a, b)
-        return aStar(model, gpsToGrid(a), gpsToGrid(b)).reverse(); //expected return is list of points starting with a and ending with b
+        let rawOutput = aStar(model, gpsToGrid(a), gpsToGrid(b)).reverse();
+        let converted = [];
+        for(let j of rawOutput)
+        {
+            converted.push(gridToGps(j));
+        }
+        return converted; //expected return is list of points starting with a and ending with b
     },
     addPath: function (data) { //when user wants to add path to data model
         let graph = convertToGraph(data);
@@ -114,8 +120,10 @@ function getDirection(a,b){
 //returns a weighted graph
 // [{a:{x,y}, b:{x,y}, weight:time}]
 function convertToGraph(data) {
-    for (let point of data.path)
+    for (let point of data.path) {
+        console.log(point.lat + " " + point.lng);
         console.log(gpsToGrid(point));
+    }
 }
 
 let MinHeap = require('min-heap');
