@@ -28,10 +28,11 @@ $(() => {
     var currentMarker;
     var currentPosition;
     var dragged = false;
+    var startTime = new Date().getTime();
     function geo_success(position) {
         console.log("GOT AN EVENT", position);
-        let pos = {lat:position.coords.latitude, lng:position.coords.longitude};
-        console.log(pos)
+        let pos = {lat:position.coords.latitude, lng:position.coords.longitude, timestamp:(new Date().getTime())-startTime};
+        console.log(pos);
         currentPosition = pos;
         if (!currentMarker) {
             map.setCenter(pos,true);
@@ -71,11 +72,11 @@ $(() => {
 
     let wpid = navigator.geolocation.watchPosition(geo_success, geo_error, geo_options);
 
-    
     let blazing = false;
     let navigation = false;
     $('#main_button').click(function () {
         if (!blazing) {
+
             dragged = false;
             map.setCenter(currentPosition,true);
             $('#autofollow_button').hide();
