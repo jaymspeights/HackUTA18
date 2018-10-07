@@ -30,7 +30,6 @@ $(() => {
     var dragged = false;
     var startTime = new Date().getTime();
     function geo_success(position) {
-        console.log("GOT AN EVENT", position);
         let pos = {lat:position.coords.latitude, lng:position.coords.longitude, timestamp:(new Date().getTime())-startTime};
         currentPosition = pos;
         if (!currentMarker) {
@@ -160,7 +159,6 @@ $(() => {
         // Initialize a linestring and add all the points to it:
         var linestring = new H.geo.LineString();
         points.forEach(function(point) {
-            console.log(point)
             linestring.pushPoint(point);
         });
 

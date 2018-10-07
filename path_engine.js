@@ -1,6 +1,5 @@
 module.exports = {
     getPath: function (a, b) { //when user wants to navigate from a to b
-        console.log(a, b)
         let rawOutput = aStar(model, gpsToGrid(a), gpsToGrid(b)).reverse();
         let converted = [];
         for(let j of rawOutput)
@@ -10,6 +9,8 @@ module.exports = {
         return converted; //expected return is list of points starting with a and ending with b
     },
     addPath: function (data) { //when user wants to add path to data model
+        console.log(`Recieved ${data.length} new data points.`);
+        if (data.length < 2) return;
         let graph = convertToGraph(data);
         if (graph) applyGraphToModel(graph);
         let res = [];
@@ -24,7 +25,6 @@ module.exports = {
                 res[i].push(n);
             }
         }
-        console.log(res.length, res[0].length);
         return res;
     }
 };
@@ -48,7 +48,6 @@ function gpsToGrid(point) {
 function gridToGps(point) {
     let lng = (point.x+ LEFT) * LNG_SCALE / PRECISION - 180;
     let lat = (point.y+ BOTTOM) * LAT_SCALE / PRECISION - 90;
-    console.log(lng, lat);
     return {lat:lat, lng:lng};
 }
 
@@ -138,7 +137,6 @@ function aStar(graph, start, end) {
     start.f = 0;
     start.g = 0;
     start.h = (Math.abs(end.x - start.x) + Math.abs(end.y - start.y)) * h_scalar;
-    console.log(start, end);
     while (open_min.size > 0) {
         let q = open_min.removeHead();
         let surroundings = [{x:q.x-1, y:q.y, dir:3}, {x:q.x+1, y:q.y, dir:1}, {x:q.x, y:q.y-1, dir:2}, {x:q.x, y:q.y+1, dir:0}];
