@@ -14,13 +14,14 @@ module.exports = {
         if (graph)
             applyGraphToModel(graph);
         let res = [];
-        for (let i of model) {
+        for (let i in model) {
             res.push([]);
-            for (let j of i) {
-                let n = j;
-                let coord = gridToGps(j);
+            for (let j in i) {
+                let n = {};
+                let coord = gridToGps({x:i, y:j});
                 n.x = coord.lng;
                 n.y = coord.lat;
+                n.connection = model[i][j];
                 res[res.length-1].push(n);
             }
         }
