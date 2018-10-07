@@ -30,7 +30,7 @@ module.exports = {
 };
 
 let model;
-let DEFAULT_WEIGHT = 5;
+let DEFAULT_WEIGHT = 1;
 
 const PRECISION = 1000000;
 const LAT_SCALE = 135;
@@ -126,7 +126,7 @@ function convertToGraph(graph) {
 }
 
 let MinHeap = require('min-heap');
-let h_scalar = 5;
+let h_scalar = 1;
 function aStar(graph, start, end) {
     let open_min = new MinHeap(function(l,r) {
         return l.f - r.f;
