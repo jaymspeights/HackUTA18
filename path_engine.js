@@ -9,8 +9,8 @@ module.exports = {
         return converted; //expected return is list of points starting with a and ending with b
     },
     addPath: function (data) { //when user wants to add path to data model
-        console.log(`Recieved ${data.length} new data points.`);
-        if (data.length < 2) return;
+        console.log(`Recieved ${data.path.length} new data points.`);
+        if (data.path.length < 2) return;
         let graph = convertToGraph(data);
         if (graph) applyGraphToModel(graph);
         let res = [];
