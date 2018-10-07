@@ -21,7 +21,7 @@ module.exports = {
                 let coord = gridToGps({x:i, y:j});
                 n.x = coord.lng;
                 n.y = coord.lat;
-                n.connection = model[i][j];
+                n.connection = model[i][j].connection;
                 res[res.length-1].push(n);
             }
         }
