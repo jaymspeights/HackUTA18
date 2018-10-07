@@ -97,6 +97,8 @@ $(() => {
         $(this).hide();
     })
 
+
+
     function drawPath(points) {
         // Initialize a linestring and add all the points to it:
         var linestring = new H.geo.LineString();
