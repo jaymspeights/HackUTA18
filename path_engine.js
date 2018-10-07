@@ -33,12 +33,12 @@ let model;
 let DEFAULT_WEIGHT = 5;
 
 const PRECISION = 1000000;
-const LAT_SCALE = 45;
-const LNG_SCALE = 39;
-const LEFT = Math.floor(82885452/39);
-const BOTTOM = Math.floor(122730852/45);
-const X_MAX = Math.ceil(82890098/39) - LEFT;
-const Y_MAX = Math.ceil(122733741/45) - BOTTOM;
+const LAT_SCALE = 135;
+const LNG_SCALE = 117;
+const LEFT = Math.floor(82885452/LNG_SCALE);
+const BOTTOM = Math.floor(122730852/LAT_SCALE);
+const X_MAX = Math.ceil(82890098/LNG_SCALE) - LEFT;
+const Y_MAX = Math.ceil(122733741/LAT_SCALE) - BOTTOM;
 function gpsToGrid(point) {
     let x=Math.round(Math.floor((+point.lng+180)*PRECISION)/LNG_SCALE) - LEFT;
     let y=Math.round(Math.floor((+point.lat+90)*PRECISION)/LAT_SCALE) - BOTTOM;
