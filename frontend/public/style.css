@@ -24,3 +24,25 @@ body {
 #nav_button:active {
     box-shadow: none;
 }
+
+#autofollow_button {
+    background-color: #1f262a;
+    color: white;
+    position: absolute;
+    bottom: 20px;
+    left: 3%;
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 1px 2px 4px rgba(0,0,0,.2);
+}
+#autofollow_button:focus {
+    outline:0;
+}
+#autofollow_button:hover {
+    box-shadow: 2px 3px 6px rgba(0,0,0,.2);
+}
+#autofollow_button:active {
+    box-shadow: none;
+}
