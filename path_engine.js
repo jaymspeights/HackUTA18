@@ -14,9 +14,9 @@ module.exports = {
         if (graph)
             applyGraphToModel(graph);
         let res = [];
-        for (let i in model) {
+        for (let i = 0; i < model.length; i++) {
             res[i]=[];
-            for (let j in model[i]) {
+            for (let j = 0; j < model[i].length; j++) {
                 let n = {};
                 let coord = gridToGps({x:i, y:j});
                 n.x = coord.lng;
@@ -49,6 +49,7 @@ function gpsToGrid(point) {
 function gridToGps(point) {
     let lng = (point.x+ LEFT) * LNG_SCALE / PRECISION - 180;
     let lat = (point.y+ BOTTOM) * LAT_SCALE / PRECISION - 90;
+    console.log(lng, lat);
     return {lat:lat, lng:lng};
 }
 
