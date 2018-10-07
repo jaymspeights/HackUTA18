@@ -47,8 +47,7 @@ app.get('/get/path', (req, res) =>  {
 });
 
 app.post('/post/path', (req, res) => {
-    path_engine.addPath(req.body);
-    res.status(200).send('success');
+    res.send(path_engine.addPath(req.body));
 });
 
 if (!noHTTPS) {
