@@ -32,22 +32,23 @@ module.exports = {
 let model;
 let DEFAULT_WEIGHT = 5;
 
-const PRECISION = 1000000;
-const LAT_SCALE = 135;
-const LNG_SCALE = 117;
-const LEFT = Math.floor(82885452/LNG_SCALE);
-const BOTTOM = Math.floor(122730852/LAT_SCALE);
-const X_MAX = Math.ceil(82890098/LNG_SCALE) - LEFT;
-const Y_MAX = Math.ceil(122733741/LAT_SCALE) - BOTTOM;
+const bottom = 32.978166 + 90;
+const left = -96.757722 + 180;
+const top = 32.995856 + 90 - bottom;
+const right = -96.743297 + 180 - left;
+const X_MAX = 100;
+const Y_MAX = 200;
+const scale_x = X_MAX/right;
+const scale_y = Y_MAX/top;
 function gpsToGrid(point) {
-    let x=Math.round(Math.floor((+point.lng+180)*PRECISION)/LNG_SCALE) - LEFT;
-    let y=Math.round(Math.floor((+point.lat+90)*PRECISION)/LAT_SCALE) - BOTTOM;
+    let x=Math.floor((+point.lng+180-left)*scale_x);
+    let y=Math.floor((+point.lat+90-bottom)*scale_y);
     return {x:x, y:y};
 }
 
 function gridToGps(point) {
-    let lng = (point.x+ LEFT) * LNG_SCALE / PRECISION - 180;
-    let lat = (point.y+ BOTTOM) * LAT_SCALE / PRECISION - 90;
+    let lng = point.x/scale_x+left+180;
+    let lat = point.y/scale_y+right+90;
     return {lat:lat, lng:lng};
 }
 
@@ -57,7 +58,6 @@ function initModel(default_weight) {
         model[x] = [];
         for (let y = 0; y < Y_MAX; y++) {
             model[x][y] = {connection:[{weight: default_weight, frequency:1}, {weight: default_weight, frequency:1}, {weight: default_weight, frequency:1}, {weight: default_weight, frequency:1}]};
-            //TODO set bounds for not on model
         }
     }
 }
