@@ -51,8 +51,8 @@ function gpsToGrid(point) {
 }
 
 function gridToGps(point) {
-    let lng = point.x/scale_x+left+180;
-    let lat = point.y/scale_y+right+90;
+    let lng = point.x/scale_x+left-180;
+    let lat = point.y/scale_y+right-90;
     return {lat:lat, lng:lng};
 }
 
