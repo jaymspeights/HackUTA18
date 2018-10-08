@@ -1,6 +1,10 @@
 module.exports = {
     getPath: function (a, b) { //when user wants to navigate from a to b
-        let rawOutput = aStar(model, gpsToGrid(a), gpsToGrid(b)).reverse();
+        let start = gpsToGrid(a);
+        let finish = gpsToGrid(b);
+        if (start.x < 0 || finish.x < 0 || start.x >= X_MAX || finish.x >= X_MAX || start.y < 0 || finish.y < 0 || start.y >= Y_MAX || finish.y >= Y_MAX)
+            return "Out of bounds";
+        let rawOutput = aStar(model, start, finish).reverse();
         let converted = [];
         for(let j of rawOutput)
         {
@@ -161,7 +165,7 @@ function aStar(graph, start, end) {
         closed.push(q);
         closed_f[ptoh(q)] = q.f;
     }
-    console.log("Failed to find path?", closed);
+    return "Could not find path";
 }
 
 function ptoh(node) {
